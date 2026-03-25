@@ -13,5 +13,13 @@ export default defineConfig({
       "~": path.resolve(import.meta.dirname, "./src"),
     },
   },
-  plugins: [tanstackStart(), react(), tailwindcss()],
+  plugins: [
+    tanstackStart({
+      server: {
+        preset: "vercel",
+      },
+    }),
+    react(),
+    tailwindcss(),
+  ],
 });
