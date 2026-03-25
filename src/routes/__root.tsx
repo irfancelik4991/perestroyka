@@ -16,14 +16,18 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { auth } from "@clerk/tanstack-react-start/server";
 import appCss from "~/styles/app.css?url";
 
-const fetchClerkAuth = createServerFn({ method: "GET" }).handler(async () => {
-  const authState = await auth();
-  const token = await authState.getToken({ template: "convex" });
+const fetchClerkAuth = createServerFn().handler(async () => {
+  try {
+    const authState = await auth();
+    const token = await authState.getToken({ template: "convex" });
 
-  return {
-    userId: authState.userId,
-    token,
-  };
+    return {
+      userId: authState.userId,
+      token,
+    };
+  } catch {
+    return { userId: null, token: null };
+  }
 });
 
 export const Route = createRootRouteWithContext<{
