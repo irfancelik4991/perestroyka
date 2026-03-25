@@ -21,6 +21,8 @@ html {
 
 body {
   @apply bg-surface text-white m-0 p-0 min-h-screen;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
 }
 
 ::-webkit-scrollbar {

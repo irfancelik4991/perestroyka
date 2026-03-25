@@ -14,7 +14,7 @@ export function Sidebar() {
   const { signOut } = useClerk();
 
   return (
-    <aside className="w-72 bg-surface-light border-r border-border flex flex-col h-screen">
+    <aside className="w-full h-full bg-surface-light border-r border-border flex flex-col">
       <div className="p-4 border-b border-border flex items-center justify-between">
         <h1 className="text-xl font-bold text-white">Perestroyka</h1>
         <UserButton />

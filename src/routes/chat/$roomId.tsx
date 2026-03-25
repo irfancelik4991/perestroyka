@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { MessageList } from "~/components/MessageList";
@@ -85,14 +85,25 @@ function RoomChat() {
   return (
     <>
       {/* Header */}
-      <div className="px-6 py-3 border-b border-border bg-surface-light flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-white">{room.name}</h2>
-          {room.description && (
-            <p className="text-xs text-muted">{room.description}</p>
-          )}
+      <div className="px-3 md:px-6 py-3 border-b border-border bg-surface-light flex items-center justify-between">
+        <div className="flex items-center min-w-0">
+          <Link
+            to="/chat"
+            className="md:hidden p-2 -ml-1 mr-1 text-muted hover:text-white transition-colors"
+            aria-label="Geri"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </Link>
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold text-white truncate">{room.name}</h2>
+            {room.description && (
+              <p className="text-xs text-muted truncate">{room.description}</p>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 ml-2 shrink-0">
           <span className="text-xs text-muted">
             {members?.length ?? 0} uye
           </span>

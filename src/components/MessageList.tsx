@@ -95,7 +95,7 @@ export function MessageList({ roomId, currentUserId }: MessageListProps) {
                 <button
                   onClick={() => handleDelete(msg._id)}
                   disabled={deletingId === msg._id}
-                  className="text-[10px] text-muted/40 hover:text-red-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="text-[10px] text-muted/40 hover:text-red-400 mt-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                 >
                   {deletingId === msg._id ? "Siliniyor..." : "Sil"}
                 </button>
