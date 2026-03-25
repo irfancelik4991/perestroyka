@@ -158,3 +158,72 @@ export const getUnreadCounts = query({
     return counts;
   },
 });
+
+export const getLatestUnreadPerRoom = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+    if (!user) return [];
+
+    const memberships = await ctx.db
+      .query("memberships")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    const readPositions = await ctx.db
+      .query("readPositions")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    const readTimeByRoom = new Map<string, number>();
+    for (const rp of readPositions) {
+      readTimeByRoom.set(rp.roomId, rp.lastReadTime);
+    }
+
+    const results: Array<{
+      roomId: Id<"rooms">;
+      roomName: string;
+      messageId: Id<"messages">;
+      senderName: string;
+      senderImage: string | undefined;
+      body: string;
+      createdAt: number;
+    }> = [];
+
+    for (const m of memberships) {
+      const lastRead = readTimeByRoom.get(m.roomId) ?? 0;
+      const latestMsg = await ctx.db
+        .query("messages")
+        .withIndex("by_room", (q) =>
+          q.eq("roomId", m.roomId).gt("createdAt", lastRead),
+        )
+        .order("desc")
+        .take(1);
+
+      if (latestMsg.length === 0) continue;
+      const msg = latestMsg[0];
+      if (msg.userId === user._id) continue;
+
+      const sender = await ctx.db.get(msg.userId);
+      const room = await ctx.db.get(m.roomId);
+
+      results.push({
+        roomId: m.roomId,
+        roomName: room?.name ?? "Oda",
+        messageId: msg._id,
+        senderName: sender?.name ?? "Bilinmeyen",
+        senderImage: sender?.imageUrl,
+        body: msg.body,
+        createdAt: msg.createdAt,
+      });
+    }
+
+    return results;
+  },
+});
